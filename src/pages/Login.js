@@ -18,9 +18,24 @@ export default function Login() {
       await firebase.auth().signInWithEmailAndPassword(emailAddress, password);
       history.push(ROUTES.DASHBOARD);
     } catch (error) {
-      setEmailAddress("");
-      setPassword("");
-      setError(error.message);
+      if (error.code === "auth/wrong-password") {
+        setPassword("");
+        setError(error.message);
+        setTimeout(() => {
+          setError("");
+        }, 4000);
+      } else if (error.code === "auth/user-not-found") {
+        setEmailAddress("");
+        setError(error.message);
+        setTimeout(() => {
+          setError("");
+        }, 4000);
+      } else {
+        console.log("GGS");
+      }
+      setTimeout(() => {
+        setError("");
+      }, 4000);
     }
   };
 
@@ -46,7 +61,9 @@ export default function Login() {
               className="mt-2 w-6/12 mb-4"
             />
           </div>
-          {error && <p className="mb-4 text-xs text-red-primary">{error}</p>}
+          {error && (
+            <p className="mb-4 text-xs text-center text-red-primary">{error}</p>
+          )}
 
           <form onSubmit={handleLogin} method="POST">
             <input
@@ -81,7 +98,7 @@ export default function Login() {
         <div className="flex justify-center flex-col w-full items-center bg-white p-4 border border-gray-primary rounded">
           <p className="text-sm">
             Don't have an account?{" "}
-            <Link to="/signup" className="font-bold text-blue-medium">
+            <Link to={ROUTES.SIGN_UP} className="font-bold text-blue-medium">
               Sign Up
             </Link>
           </p>

@@ -3,6 +3,8 @@ import { useHistory } from "react-router";
 import { Link } from "react-router-dom";
 import { firebaseContext } from "../context/firebase";
 import * as ROUTES from "../constants/routes";
+import { doesUsernameExists } from "../services/firebase";
+
 export default function Signup() {
   const history = useHistory();
   const { firebase } = useContext(firebaseContext);
@@ -20,8 +22,44 @@ export default function Signup() {
     fullName === "";
   const handleSignUp = async (e) => {
     e.preventDefault();
-    //try {
-    //} catch (error) {}
+    const usernameExists = await doesUsernameExists(username);
+    if (!usernameExists.length) {
+      try {
+        const createdUserResult = await firebase
+          .auth()
+          .createUserWithEmailAndPassword(emailAddress, password);
+
+        //authentication
+        // -> emailAddress & password & username(displayname)
+        await createdUserResult.user.updateProfile({
+          displayName: username,
+        });
+
+        //firebase user collection (create a document)
+        await firebase.firestore().collection("users").add({
+          userId: createdUserResult.user.uid,
+          username: username.toLowerCase(),
+          fullName,
+          emailAddress: emailAddress.toLowerCase(),
+          following: [],
+          dateCreated: Date.now(),
+        });
+
+        history.push(ROUTES.DASHBOARD);
+      } catch (error) {
+        setEmailAddress("");
+        setError(error.message);
+        setTimeout(() => {
+          setError("");
+        }, 4000);
+      }
+    } else {
+      setUsername("");
+      setError("Username is already taken, try a different one...");
+      setTimeout(() => {
+        setError("");
+      }, 4000);
+    }
   };
 
   useEffect(() => {
@@ -44,7 +82,9 @@ export default function Signup() {
             Sign up to see photos and videos from your friends.
           </h1>
 
-          {error && <p className="mb-4 text-xs text-red-primary">{error}</p>}
+          {error && (
+            <p className="mb-4 text-xs text-center text-red-primary">{error}</p>
+          )}
 
           <form onSubmit={handleSignUp} method="POST">
             <input
@@ -101,7 +141,7 @@ export default function Signup() {
         <div className="flex justify-center flex-col w-full items-center bg-white p-4 border border-gray-primary rounded">
           <p className="text-sm">
             Have an account?{" "}
-            <Link to="/login" className="font-normal  text-blue-medium">
+            <Link to={ROUTES.LOGIN} className="font-normal  text-blue-medium">
               Log in
             </Link>
           </p>
