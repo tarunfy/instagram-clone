@@ -25,6 +25,7 @@ module.exports = {
         base: "#616161",
         background: "#fafafa",
         primary: "#dbdbdb",
+        customText: "#8E8E8E",
       },
       red: {
         primary: "#ed4956",
