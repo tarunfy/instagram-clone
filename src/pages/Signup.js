@@ -28,7 +28,6 @@ export default function Signup() {
         const createdUserResult = await firebase
           .auth()
           .createUserWithEmailAndPassword(emailAddress, password);
-
         //authentication
         // -> emailAddress & password & username(displayname)
         await createdUserResult.user.updateProfile({
