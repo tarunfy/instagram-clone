@@ -2,7 +2,7 @@ import React, { useContext, useState, useEffect } from "react";
 import { useHistory } from "react-router";
 import { Link } from "react-router-dom";
 import { firebaseContext } from "../context/firebase";
-
+import * as ROUTES from "../constants/routes";
 export default function Login() {
   const history = useHistory();
   const { firebase } = useContext(firebaseContext);
@@ -12,7 +12,17 @@ export default function Login() {
   const [error, setError] = useState("");
 
   const isInvalid = password === "" || emailAddress === "";
-  const handleLogin = () => {};
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    try {
+      await firebase.auth().signInWithEmailAndPassword(emailAddress, password);
+      history.push(ROUTES.DASHBOARD);
+    } catch (error) {
+      setEmailAddress("");
+      setPassword("");
+      setError(error.message);
+    }
+  };
 
   useEffect(() => {
     document.title = "Login - Instagram";
@@ -40,6 +50,8 @@ export default function Login() {
 
           <form onSubmit={handleLogin} method="POST">
             <input
+              value={emailAddress}
+              required
               aria-label="Enter your email address"
               type="text"
               placeholder="Email address"
@@ -47,6 +59,8 @@ export default function Login() {
               onChange={({ target }) => setEmailAddress(target.value)}
             />
             <input
+              value={password}
+              required
               aria-label="Enter your password"
               type="password"
               placeholder="Password"
