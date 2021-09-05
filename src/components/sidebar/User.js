@@ -1,11 +1,11 @@
 import React from "react";
 
-function Sidebar() {
+function User() {
   return (
     <div>
-      <p>Sidebar</p>
+      <p>User</p>
     </div>
   );
 }
 
-export default Sidebar;
+export default User;
