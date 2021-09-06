@@ -7,7 +7,7 @@ export async function doesUsernameExists(username) {
     .collection("users")
     .where("username", "==", username)
     .get();
-  console.log(result);
+
   return result.docs.map((user) => user.data().length > 0);
 }
 
@@ -18,7 +18,7 @@ export async function getUserByUserId(userId) {
     .collection("users")
     .where("userId", "==", userId)
     .get();
-  console.log(result);
+
   const user = result.docs.map((item) => {
     return {
       ...item.data(),
@@ -27,4 +27,23 @@ export async function getUserByUserId(userId) {
   });
 
   return user;
+}
+
+//getting the suggested profiles back from the firestore database
+export async function getSuggestedProfiles(userId, following) {
+  const suggestions = await firebase
+    .firestore()
+    .collection("users")
+    .limit(10)
+    .get();
+
+  return suggestions.docs
+    .map((user) => ({
+      ...user.data(),
+      docId: user.id,
+    }))
+    .filter(
+      (profile) =>
+        profile.userId !== userId && !following.includes(profile.userId)
+    );
 }
