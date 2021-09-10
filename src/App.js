@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import * as ROUTES from "./constants/routes";
 import useAuthListener from "./hooks/use-auth-listener";
 import { UserContext } from "./context/user";
+import Profile from "./pages/Profile";
 
 import ProtectedRoutes from "./helpers/protected-routes";
 import IsUserLoggedIn from "./helpers/is-user-logged-in";
