@@ -166,3 +166,29 @@ export async function isUserFollowingProfile(
   });
   return response.userId;
 }
+
+export async function toggleFollow(
+  isFollowingProfile,
+  activeUserDocId,
+  profileDocId,
+  profileUserId,
+  followingUserId
+) {
+  //1 param => currently logged in user doc id(ohitztarun)
+  //2 param => user that we want to follow, his user id
+  //3 param => if the logged in user already following the profile or not(true or false)
+  await updateLoggedInUserFollowing(
+    activeUserDocId,
+    profileUserId,
+    isFollowingProfile
+  );
+
+  //1 param => currently logged in user, user id(ohitztarun)
+  //2 param => user that we want to follow, doc id
+  //3 param => if the logged in user already following the profile or not(true or false)
+  await updateFollowedUserFollowers(
+    profileDocId,
+    followingUserId,
+    isFollowingProfile
+  );
+}

@@ -19,13 +19,13 @@ export default function Profile({ user }) {
     reducer,
     inititalState
   );
+
   useEffect(() => {
     async function getProfileInfoAndPhotos() {
       const photos = await getUserPhotosByUsername(user.username);
-      console.log(photos);
       dispatch({
         profile: user,
-        photoCollection: photos,
+        photosCollection: photos,
         followerCount: user.followers.length,
       });
     }
@@ -36,7 +36,7 @@ export default function Profile({ user }) {
     <>
       <ProfileHeader
         photosCount={photosCollection ? photosCollection.length : 0}
-        profile={user}
+        profile={profile}
         followerCount={followerCount}
         setFollowerCount={dispatch}
       />
