@@ -26,4 +26,7 @@ module.exports = {
       },
     },
   },
+  variants: {
+    display: ["group-hover"],
+  },
 };
